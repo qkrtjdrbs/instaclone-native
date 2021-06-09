@@ -1,0 +1,10 @@
+View : div
+Text : span
+
+**앱은 사용자가 사용하기 전에 preload 되어야 함**
+
+Navigator : ReactJS의 Router
+TouchableOpacity : button과 비슷
+-onPress(함수) 속성 : 터치할 때 함수 시행
+
+navigation.navigate("Stack.Screen의 이름") -> ""라는 이름을 가진 Screen으로 보내줌
