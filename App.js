@@ -5,17 +5,31 @@ import * as Font from "expo-font";
 import { Asset } from "expo-asset";
 import LoggedOutNav from "./navigators/LoggedOutNav";
 import { NavigationContainer } from "@react-navigation/native";
-import { Appearance, AppearanceProvider } from "react-native-appearance";
+import { ApolloProvider, useReactiveVar } from "@apollo/client";
+import client, { isLoggedInVar, tokenVar } from "./apollo";
+import LoggedInNav from "./navigators/LoggedInNav";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
-  const onFinish = () => setLoading(false);
-  const preload = () => {
+  const isLoggedIn = useReactiveVar(isLoggedInVar);
+  const preloadAssets = () => {
     const fontToLoad = [Ionicons.font];
     const fontPromises = fontToLoad.map((font) => Font.loadAsync(font));
     const imagesToLoad = [require("./assets/insta.png")];
     const imagePromises = imagesToLoad.map((image) => Asset.loadAsync(image));
     return Promise.all([...fontPromises, ...imagePromises]);
+  };
+  const onFinish = () => setLoading(false);
+  const preload = async () => {
+    //Before starting the app, check if there is a token in the storage first
+    //and if exist then change it to a login state.
+    const token = await AsyncStorage.getItem("token");
+    if (token) {
+      isLoggedInVar(true);
+      tokenVar(token);
+    }
+    return preloadAssets();
   };
   if (loading) {
     return (
@@ -26,12 +40,11 @@ export default function App() {
       />
     );
   }
-  const subscription = Appearance.addChangeListener(({ colorScheme }) =>
-    console.log(colorScheme)
-  );
   return (
-    <NavigationContainer>
-      <LoggedOutNav />
-    </NavigationContainer>
+    <ApolloProvider client={client}>
+      <NavigationContainer>
+        {isLoggedIn ? <LoggedInNav /> : <LoggedOutNav />}
+      </NavigationContainer>
+    </ApolloProvider>
   );
 }

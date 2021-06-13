@@ -3,8 +3,15 @@ Text : span
 
 **앱은 사용자가 사용하기 전에 preload 되어야 함**
 
-Navigator : ReactJS의 Router
+Stack.Navigator : ReactJS의 Router
 TouchableOpacity : button과 비슷
 -onPress(함수) 속성 : 터치할 때 함수 시행
 
-navigation.navigate("Stack.Screen의 이름") -> ""라는 이름을 가진 Screen으로 보내줌
+navigation.navigate("Stack.Screen의 이름 ex] Login", {
+    userName,
+    password,
+}) -> "Login" 라는 이름을 가진 Screen으로 보내줌. userName과 password라는 정보와 함께
+
+
+TextInput : input
+-onChangeText : text가 바뀌었을 때 실행, 방금 바뀐 text를 arg로 줌
