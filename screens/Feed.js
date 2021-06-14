@@ -1,14 +1,34 @@
+import { gql, useQuery } from "@apollo/client";
 import React from "react";
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
+import { PHOTO_FRAGMENT, COMMENT_FRAGMENT } from "../fragment";
 import styled from "styled-components";
-import { logUserOut } from "../apollo";
-import AuthButton from "../components/auth/AuthButton";
 
-export default function Feed() {
+const FEED_QUERY = gql`
+  query seeFeed {
+    seeFeed {
+      ...PhotoFragment
+      user {
+        userName
+        avatar
+      }
+      caption
+      comments {
+        ...CommentFragment
+      }
+      createdAt
+      isMine
+    }
+  }
+  ${PHOTO_FRAGMENT}
+  ${COMMENT_FRAGMENT}
+`;
+
+export default function Feed({ navigation }) {
+  const { data } = useQuery(FEED_QUERY);
   return (
     <View>
-      <Text>Hello</Text>
-      <AuthButton text="Log out" onPress={logUserOut} disabled={false} />
+      <Text>Feed</Text>
     </View>
   );
 }

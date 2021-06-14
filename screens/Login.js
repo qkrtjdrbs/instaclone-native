@@ -6,6 +6,7 @@ import AuthLayout from "../components/auth/AuthLayout";
 import { TextInput } from "../components/auth/AuthShared";
 import { gql, useMutation } from "@apollo/client";
 import { logUserIn } from "../apollo";
+import { Text, TouchableOpacity, View } from "react-native";
 
 const LOGIN_MUTATION = gql`
   mutation login($userName: String!, $password: String!) {
@@ -40,7 +41,9 @@ export default function Login({ route: { params } }) {
     if (ok) {
       await logUserIn(token);
     } else {
-      setError("result", error);
+      setError("result", {
+        message: error,
+      });
     }
   };
   const [loginMutation, { loading }] = useMutation(LOGIN_MUTATION, {
@@ -61,13 +64,17 @@ export default function Login({ route: { params } }) {
   }, [register]);
   return (
     <AuthLayout>
-      {errors?.result?.message}
+      <Text>{errors?.result?.message}</Text>
       <TextInput
         value={watch("userName")}
         placeholder="Username"
         returnKeyType="next"
         onSubmitEditing={() => onNext(passwordRef)}
         onChangeText={(text) => setValue("userName", text)}
+        style={{
+          borderWidth: 1,
+          borderColor: "#C4C4C4",
+        }}
       ></TextInput>
       <TextInput
         value={watch("password")}
@@ -78,6 +85,10 @@ export default function Login({ route: { params } }) {
         lastOne={true}
         onSubmitEditing={handleSubmit(onValid)}
         onChangeText={(text) => setValue("password", text)}
+        style={{
+          borderWidth: 1,
+          borderColor: "#C4C4C4",
+        }}
       ></TextInput>
       <AuthButton
         text="Log in"
