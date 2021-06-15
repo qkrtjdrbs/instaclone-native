@@ -23,3 +23,10 @@ TextInput : input
     </Stack.Navigator>
 </Tab.Screen>
 => "Something" tab안에서 "Profile", "Photo" 스택 화면 볼 수 있다.(Tab과 Stack의 결합)
+
+Native 상에서 리스트를 표현할 때
+1. ScrollView : 모든 children을 한번에 load
+2. FlatList : children을 한번에 load하지 않음. (infinite scroll 구현 가능)
+
+Native 상에서 Image를 표현할 때
+-width, height 필수 지정

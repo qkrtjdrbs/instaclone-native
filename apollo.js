@@ -25,7 +25,7 @@ export const logUserOut = async () => {
 };
 
 const httpLink = createHttpLink({
-  uri: "http://b86c71298004.ngrok.io/graphql",
+  uri: "http://e68cc5c663d3.ngrok.io/graphql",
 });
 
 const authLink = setContext((_, { headers }) => {
