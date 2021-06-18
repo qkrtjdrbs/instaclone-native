@@ -12,6 +12,10 @@ navigation.navigate("Stack.Screen의 이름 ex] Login", {
     password,
 }) -> "Login" 라는 이름을 가진 Screen으로 보내줌. userName과 password라는 정보와 함께
 
+navigation.setOptions({
+    title: "blabla",
+}) -> 헤더를 설정할 수 있음
+
 
 TextInput : input
 -onChangeText : text가 바뀌었을 때 실행, 방금 바뀐 text를 arg로 줌
@@ -28,9 +32,10 @@ Native 상에서 리스트를 표현할 때
 1. ScrollView : 모든 children을 한번에 load
 2. FlatList : children을 한번에 load하지 않음. (infinite scroll 구현 가능)
 -FlatLsit의 properties
--아래로 당기면 새로고침 : refreshing, onRefresh : 당길 때 실행되는 함수
+-아래로 당기면 새로고침 : refreshing : true일때 refresh, onRefresh : 당길 때 실행되는 함수
 -스크롤이 마지막 요소에 도달할 때 함수 호출 : onEndReached
 -마지막 요소 설정 : onEndReachedThreshold
+-아이템들 사이에 separator 생성 (마지막 제외) : ItemSeparatorComponent
 
 Native 상에서 Image를 표현할 때
 -width, height 필수 지정
