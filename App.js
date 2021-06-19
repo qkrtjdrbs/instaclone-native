@@ -31,13 +31,7 @@ export default function App() {
       isLoggedInVar(true);
       tokenVar(token);
     }
-    //to use apollo cache when backend not working
-    await persistCache({
-      cache,
-      storage: new AsyncStorageWrapper(AsyncStorage),
-      //To prevent existing cookies from being confused when there is a change in the query
-      serialize: false,
-    });
+
     return preloadAssets();
   };
 

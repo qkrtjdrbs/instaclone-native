@@ -2,7 +2,6 @@ import { gql, useQuery } from "@apollo/client";
 import React from "react";
 import { FlatList } from "react-native";
 import { PHOTO_FRAGMENT, COMMENT_FRAGMENT } from "../fragment";
-import styled from "styled-components";
 import ScreenLayout from "../components/ScreenLayout";
 import Photo from "../components/Photo";
 import { useState } from "react";
@@ -46,7 +45,7 @@ export default function Feed({ navigation }) {
   return (
     <ScreenLayout loading={loading}>
       <FlatList
-        onEndReachedThreshold={0.05}
+        onEndReachedThreshold={0.02}
         onEndReached={() =>
           fetchMore({
             variables: {

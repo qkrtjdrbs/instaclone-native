@@ -30,6 +30,7 @@ TextInput : input
 
 Native 상에서 리스트를 표현할 때
 1. ScrollView : 모든 children을 한번에 load
+-refreshControl 속성 안에 <RefreshControl /> component 사용해서 당겨서 새로고침 구현 가능.
 2. FlatList : children을 한번에 load하지 않음. (infinite scroll 구현 가능)
 -FlatLsit의 properties
 -아래로 당기면 새로고침 : refreshing : true일때 refresh, onRefresh : 당길 때 실행되는 함수
@@ -39,3 +40,6 @@ Native 상에서 리스트를 표현할 때
 
 Native 상에서 Image를 표현할 때
 -width, height 필수 지정
+
+const [startQueryFn, {loading, data}] = useLazyQuery(SEARCH_QUERY);
+-> startQueryFn이 실행 될 때 SEARCH_QUERY가 실행된다.

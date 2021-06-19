@@ -2,10 +2,13 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import TabIcon from "../components/nav/TabIcon";
 import StackNavFactory from "../navigators/StackNavFactory";
+import useMe from "../hooks/useMe";
+import { Image } from "react-native";
 
 const Tabs = createBottomTabNavigator();
 
 export default function LoggedInNav() {
+  const { data } = useMe();
   return (
     <Tabs.Navigator
       tabBarOptions={{
@@ -58,9 +61,20 @@ export default function LoggedInNav() {
       <Tabs.Screen
         name="Me"
         options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon iconName={"person"} focused={focused} />
-          ),
+          tabBarIcon: ({ focused }) =>
+            data?.me?.avatar ? (
+              <Image
+                source={{ uri: data.me.avatar }}
+                style={{
+                  height: 25,
+                  width: 25,
+                  borderRadius: 12.5,
+                  ...(focused && { borderColor: "black", borderWidth: 1 }),
+                }}
+              />
+            ) : (
+              <TabIcon iconName={"person"} focused={focused} />
+            ),
         }}
       >
         {() => <StackNavFactory screenName="Me" />}

@@ -1,56 +1,54 @@
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import gql from "graphql-tag";
-import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
+import { View, RefreshControl } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import styled from "styled-components";
+import Photo from "../components/Photo";
+import ScreenLayout from "../components/ScreenLayout";
+import { PHOTO_FRAGMENT } from "../fragment";
 
-const TOGGLE_LIKE_MUTATION = gql`
-  mutation toggleLike($id: Int!) {
-    toggleLike(id: $id) {
-      ok
-      error
+const SEE_PHOTO = gql`
+  query seePhoto($id: Int!) {
+    seePhoto(id: $id) {
+      ...PhotoFragment
+      user {
+        id
+        userName
+        avatar
+      }
+      caption
     }
   }
+  ${PHOTO_FRAGMENT}
 `;
 
-export default function Photo({ navigation }) {
-  const updateToggleLike = (cache, result) => {
-    const {
-      data: {
-        toggleLike: { ok },
-      },
-    } = result;
-    if (ok) {
-      const photoId = `Photo:${id}`;
-      cache.modify({
-        id: photoId,
-        fields: {
-          //prev : previous isLiked's value
-          isLiked(prev) {
-            return !prev;
-          },
-          //prev : previous likes's value
-          likes(prev) {
-            if (isLiked) {
-              return prev - 1;
-            }
-            return prev + 1;
-          },
-        },
-      });
-    }
-  };
-  const [toggleLikeMutation] = useMutation(TOGGLE_LIKE_MUTATION, {
+export default function PhotoScreen({ route }) {
+  const { data, loading, refetch } = useQuery(SEE_PHOTO, {
     variables: {
-      id,
+      id: route?.params?.photoId,
     },
-    update: updateToggleLike,
   });
+  const [refreshing, setRefreshing] = useState();
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
   return (
-    <View>
-      <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
-        <Text>Profile</Text>
-      </TouchableOpacity>
-    </View>
+    <ScreenLayout loading={loading}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
+        }
+        contentContainerStyle={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Photo {...data?.seePhoto} />
+      </ScrollView>
+    </ScreenLayout>
   );
 }

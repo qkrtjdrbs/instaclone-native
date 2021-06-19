@@ -5,6 +5,16 @@ import { Image, TouchableOpacity, useWindowDimensions } from "react-native";
 import { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
+import { gql, useMutation } from "@apollo/client";
+
+const TOGGLE_LIKE_MUTATION = gql`
+  mutation toggleLike($id: Int!) {
+    toggleLike(id: $id) {
+      ok
+      error
+    }
+  }
+`;
 
 const Container = styled.View``;
 const Header = styled.TouchableOpacity`
@@ -53,6 +63,38 @@ export default function Photo({ id, user, isLiked, file, likes, caption }) {
     });
     setImageHeight();
   }, [file]);
+  const updateToggleLike = (cache, result) => {
+    const {
+      data: {
+        toggleLike: { ok },
+      },
+    } = result;
+    if (ok) {
+      const photoId = `Photo:${id}`;
+      cache.modify({
+        id: photoId,
+        fields: {
+          //prev : previous isLiked's value
+          isLiked(prev) {
+            return !prev;
+          },
+          //prev : previous likes's value
+          likes(prev) {
+            if (isLiked) {
+              return prev - 1;
+            }
+            return prev + 1;
+          },
+        },
+      });
+    }
+  };
+  const [toggleLikeMutation] = useMutation(TOGGLE_LIKE_MUTATION, {
+    variables: {
+      id,
+    },
+    update: updateToggleLike,
+  });
   const goToProfile = () => {
     navigation.navigate("Profile", {
       userName: user.userName,
@@ -71,7 +113,7 @@ export default function Photo({ id, user, isLiked, file, likes, caption }) {
         source={{ uri: file }}
       />
       <ExtraContainer>
-        <Actions>
+        <Actions onPress={toggleLikeMutation}>
           <Action>
             <Ionicons
               name={isLiked ? "heart" : "heart-outline"}
@@ -113,5 +155,5 @@ Photo.propTypes = {
   isLiked: PropTypes.bool.isRequired,
   likes: PropTypes.number.isRequired,
   caption: PropTypes.string,
-  commentNumber: PropTypes.number.isRequired,
+  commentNumber: PropTypes.number,
 };
