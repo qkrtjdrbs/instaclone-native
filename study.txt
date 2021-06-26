@@ -43,3 +43,6 @@ Native 상에서 Image를 표현할 때
 
 const [startQueryFn, {loading, data}] = useLazyQuery(SEARCH_QUERY);
 -> startQueryFn이 실행 될 때 SEARCH_QUERY가 실행된다.
+
+useWindowDimensions()
+-> 현재 화면의 넓이 계산

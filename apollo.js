@@ -26,7 +26,7 @@ export const logUserOut = async () => {
 };
 
 const httpLink = createHttpLink({
-  uri: "http://331b7a9a772f.ngrok.io/graphql",
+  uri: "http://3a7156c8ae0e.ngrok.io/graphql",
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -45,7 +45,13 @@ export const cache = new InMemoryCache({
       fields: {
         //It prevents Apollo from distinguishing seeFeed queries according to arguments.
         //It combines old data with new data.
-        seeFeed: offsetLimitPagination(),
+        seeFeed: {
+          keyArgs: false,
+          merge(existing = [], incoming = []) {
+            if (incoming[0] === undefined) return [...existing];
+            return [...existing, ...incoming];
+          },
+        },
       },
     },
   },

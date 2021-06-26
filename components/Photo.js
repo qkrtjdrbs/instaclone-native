@@ -113,8 +113,8 @@ export default function Photo({ id, user, isLiked, file, likes, caption }) {
         source={{ uri: file }}
       />
       <ExtraContainer>
-        <Actions onPress={toggleLikeMutation}>
-          <Action>
+        <Actions>
+          <Action onPress={toggleLikeMutation}>
             <Ionicons
               name={isLiked ? "heart" : "heart-outline"}
               color={isLiked ? "tomato" : "black"}
