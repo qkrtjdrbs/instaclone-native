@@ -4,9 +4,11 @@ import {
   InMemoryCache,
   makeVar,
 } from "@apollo/client";
+import { onError } from "@apollo/client/link/error";
 import { setContext } from "@apollo/client/link/context";
 import { offsetLimitPagination } from "@apollo/client/utilities";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createUploadLink } from "apollo-upload-client";
 
 export const isLoggedInVar = makeVar(false);
 export const tokenVar = makeVar("");
@@ -26,7 +28,11 @@ export const logUserOut = async () => {
 };
 
 const httpLink = createHttpLink({
-  uri: "http://3a7156c8ae0e.ngrok.io/graphql",
+  uri: "http://db31e1fc4fd7.ngrok.io/graphql",
+});
+
+const uploadHttpLink = createUploadLink({
+  uri: "http://db31e1fc4fd7.ngrok.io/graphql",
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -39,26 +45,26 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
+const onErrorLink = onError((error) => {
+  console.log(error);
+});
+
 export const cache = new InMemoryCache({
   typePolicies: {
     Query: {
       fields: {
         //It prevents Apollo from distinguishing seeFeed queries according to arguments.
         //It combines old data with new data.
-        seeFeed: {
-          keyArgs: false,
-          merge(existing = [], incoming = []) {
-            if (incoming[0] === undefined) return [...existing];
-            return [...existing, ...incoming];
-          },
-        },
+        seeFeed: offsetLimitPagination(),
       },
     },
   },
 });
 
+//http link is last link
+
 const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: authLink.concat(onErrorLink).concat(uploadHttpLink),
   cache,
 });
 

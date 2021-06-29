@@ -5,6 +5,7 @@ import * as MediaLibrary from "expo-media-library";
 import { Ionicons } from "@expo/vector-icons";
 import useWindowDimensions from "react-native/Libraries/Utilities/useWindowDimensions";
 import { color } from "../color";
+import { StatusBar } from "expo-status-bar";
 
 const Container = styled.View`
   flex: 1;
@@ -22,11 +23,12 @@ const IconContainer = styled.View`
   bottom: 5px;
   right: 0px;
 `;
-const HeaderRightText = styled.Text`
-  font-size: 15px;
+const PhotoBar = styled.View`
+  padding: 12px;
+`;
+const PhotoBarText = styled.Text`
   font-weight: 700;
-  margin-right: 8px;
-  color: ${color.blue};
+  font-size: 22px;
 `;
 
 export default function SelectPhoto({ navigation }) {
@@ -35,7 +37,10 @@ export default function SelectPhoto({ navigation }) {
   const [chosenPhoto, setChosenPhoto] = useState("");
   const getPhotos = async () => {
     //Bring up all of user's photos
-    const { assets: photos } = await MediaLibrary.getAssetsAsync();
+    const { assets: photos } = await MediaLibrary.getAssetsAsync({
+      first: 50,
+      sortBy: [[MediaLibrary.SortBy.default, false]],
+    });
     setPhotos(photos);
     setChosenPhoto(photos[0]?.uri);
   };
@@ -57,15 +62,26 @@ export default function SelectPhoto({ navigation }) {
     getPermissions();
   }, []);
   const HeaderRight = () => (
-    <TouchableOpacity>
-      <HeaderRightText>Next</HeaderRightText>
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate("UploadForm", {
+          file: chosenPhoto,
+        })
+      }
+    >
+      <Ionicons
+        name={"arrow-forward"}
+        color={color.blue}
+        size={28}
+        style={{ marginRight: 10 }}
+      />
     </TouchableOpacity>
   );
   useEffect(() => {
     navigation.setOptions({
       headerRight: HeaderRight,
     });
-  });
+  }, [chosenPhoto]);
   const { width } = useWindowDimensions();
   const choosePhoto = (uri) => {
     setChosenPhoto(uri);
@@ -87,6 +103,7 @@ export default function SelectPhoto({ navigation }) {
   );
   return (
     <Container>
+      <StatusBar hidden={false} />
       <Top>
         {chosenPhoto !== "" ? (
           <Image
@@ -96,6 +113,9 @@ export default function SelectPhoto({ navigation }) {
         ) : null}
       </Top>
       <Bottom>
+        <PhotoBar>
+          <PhotoBarText>Gallery</PhotoBarText>
+        </PhotoBar>
         <FlatList
           data={photos}
           numColumns={4}

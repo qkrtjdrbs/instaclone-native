@@ -16,13 +16,18 @@ export default function UploadNav() {
           <Stack.Navigator
             screenOptions={{
               headerBackImage: ({ tintColor }) => (
-                <Ionicons color={tintColor} name="close" size={28} />
+                <Ionicons color={tintColor} name="close" size={40} />
               ),
             }}
           >
             <Stack.Screen
               name="Select"
-              options={{ title: "Choose a photo" }}
+              options={{
+                title: "New Post",
+                headerTitleStyle: {
+                  fontWeight: "700",
+                },
+              }}
               component={SelectPhoto}
             />
           </Stack.Navigator>

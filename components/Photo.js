@@ -61,7 +61,6 @@ export default function Photo({ id, user, isLiked, file, likes, caption }) {
     Image.getSize(file, () => {
       setImageHeight(height / 3);
     });
-    setImageHeight();
   }, [file]);
   const updateToggleLike = (cache, result) => {
     const {
@@ -108,7 +107,7 @@ export default function Photo({ id, user, isLiked, file, likes, caption }) {
         <Username>{user.userName}</Username>
       </Header>
       <File
-        resizeMode="contain"
+        resizeMode="cover"
         style={{ width, height: imageHeight }}
         source={{ uri: file }}
       />
